@@ -50,3 +50,10 @@ The system provides **real-time** updates (polling every 2 seconds) with **100% 
 - **Frontend:** Runs on `localhost:5173` (Vite).
 - **Cloud Readiness:** The project contains a `deployment-setup` branch with full Docker and Vercel/Render configurations ready for live deployment.
 
+## 5. Future Changes and Extensions
+To further enhance this system, we plan to implement:
+- **Database Integration:** migrating from file-based storage to a robust database like PostgreSQL or MongoDB for scalable log retention.
+- **Authentication:** Adding JWT-based Login/Signup to secure access to the admin dashboard.
+- **WebSockets:** Replacing the current polling mechanism with WebSockets (Spring Boot + SockJS) for true, instant real-time log streaming.
+- **Microservices:** Decoupling the Producer (Log Ingestion) and Consumer (Log Processing) into separate services using Kafka for enterprise-level scale.
+
