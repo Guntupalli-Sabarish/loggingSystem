@@ -3,6 +3,17 @@
 ## 1. SITUATION: Why was this project needed?
 In modern software environments, tracking application behavior in real-time is critical. We needed a centralized, non-blocking system to capture, store, and visualize logs from various parts of an application. The goal was to create a robust monitoring tool that could handle high concurrency without slowing down the core application logic.
 
+### Real-World Scenarios & Examples:
+*   **Scenario A: E-Commerce Surge (Black Friday)**
+    *   *Problem:* Thousands of users checkout simultaneously. If the payment service crashes, traditional logging might be too slow or get lost in the crash.
+    *   *Need:* An asynchronous logger that captures "Payment Failed" events instantly without blocking the user's transaction thread.
+*   **Scenario B: Microservices Debugging**
+    *   *Problem:* A user reports an error, but the issue lies deep within Service C, called by Service B, called by Service A.
+    *   *Need:* A centralized dashboard to view logs from all services in one place to trace the request lifecycle.
+*   **Scenario C: Security Auditing**
+    *   *Problem:* A brute-force attack generates 10,000 login attempts per second.
+    *   *Need:* A high-performance logger that can handle this write-heavy load and alert admins (via the "High Severity" filter) immediately.
+
 ## 2. TASK: Algorithms, Patterns, and Code Used
 To solve this, we employed several key software engineering principles and design patterns:
 - **Design Patterns:**
