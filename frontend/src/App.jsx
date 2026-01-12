@@ -19,18 +19,28 @@ function App() {
     }
   };
 
+  const [newLogSeverity, setNewLogSeverity] = useState('LOW');
+
   const addSimulatedLog = async () => {
     if (!newLog) return;
     try {
       await axios.post(`${API_BASE_URL}/api/logs`, {
         data: newLog,
-        severity: 'LOW',
+        severity: newLogSeverity,
         threadName: 'UI-Thread'
       });
       setNewLog('');
       fetchLogs();
     } catch (error) {
       console.error('Error adding log:', error);
+    }
+  };
+  const clearLogs = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/logs`);
+      fetchLogs();
+    } catch (error) {
+      console.error('Error clearing logs:', error);
     }
   };
 
@@ -58,6 +68,15 @@ function App() {
 
       <div className="controls-card">
         <div className="input-group">
+          <select
+            value={newLogSeverity}
+            onChange={(e) => setNewLogSeverity(e.target.value)}
+            className="severity-select"
+          >
+            <option value="LOW">Low</option>
+            <option value="WARN">Warn</option>
+            <option value="HIGH">High</option>
+          </select>
           <input
             type="text"
             value={newLog}
@@ -91,7 +110,10 @@ function App() {
       </div>
 
       <div className="logs-container">
-        <h3>Recent Logs ({filteredLogs.length})</h3>
+        <div className="logs-header">
+          <h3>Recent Logs ({filteredLogs.length})</h3>
+          <button onClick={clearLogs} className="clear-btn">Clear Logs</button>
+        </div>
         {filteredLogs.length === 0 ? (
           <div className="empty-state">No matching logs found.</div>
         ) : (

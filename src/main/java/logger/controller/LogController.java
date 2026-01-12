@@ -27,4 +27,9 @@ public class LogController {
         loggerService.addLog(log);
         return log;
     }
+
+    @DeleteMapping
+    public void clearLogs() {
+        loggerService.clearLogs();
+    }
 }

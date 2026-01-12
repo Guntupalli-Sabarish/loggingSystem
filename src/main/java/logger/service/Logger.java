@@ -52,8 +52,12 @@ public class Logger {
 
     }
 
-    private void deleteLogs() {
-
+    public void clearLogs() {
+        logTrackSet.clear();
+        // Option: we could also clear the fileStore, but typically file logs are kept
+        // for audit.
+        // For this user request, clearing the UI/Memory is likely what they mean by
+        // "Delete".
     }
 
 }
