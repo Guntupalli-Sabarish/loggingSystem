@@ -50,7 +50,55 @@ The system provides **real-time** updates (polling every 2 seconds) with **100% 
 - **Frontend:** Runs on `localhost:5173` (Vite).
 - **Cloud Readiness:** The project contains a `deployment-setup` branch with full Docker and Vercel/Render configurations ready for live deployment.
 
-## 5. Future Changes and Extensions
+## 5. How to Run Locally
+
+### Prerequisites
+- **Java 17+** installed.
+- **Node.js** (v18+) & **npm** installed.
+- **Git** installed.
+
+### Step-by-Step Guide
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/Guntupalli-Sabarish/loggingSystem.git
+    cd loggingSystem
+    ```
+
+2.  **Start the Backend (Server)**
+    Open a terminal in the root folder and run:
+    ```bash
+    mvn spring-boot:run
+    ```
+    *Wait until you see: `Started App in X.XXX seconds` on port 8080.*
+
+3.  **Start the Frontend (Client)**
+    Open a **new** terminal, navigate to the frontend folder, and start the app:
+    ```bash
+    cd frontend
+    npm run dev
+    ```
+    *Open the URL shown (e.g., `http://localhost:5173`) in your browser.*
+
+## 6. Troubleshooting Common Issues
+
+### "Port 8080 is already in use"
+*   **Reason:** You might have an old instance of the server running.
+*   **Solution:**
+    - **Windows:** Run `netstat -ano | findstr :8080`, find the PID, and run `taskkill /F /PID <PID>`.
+    - **Mac/Linux:** Run `lsof -i :8080` and `kill -9 <PID>`.
+
+### "Frontend says 'Network Error' or Logs don't load"
+*   **Reason:** The backend server is not running or CORS is blocked.
+*   **Solution:**
+    1.  Ensure the backend terminal shows "Started App".
+    2.  Check for errors in the browser console (F12).
+    3.  Verify `App.java` has the `@CrossOrigin` or `CorsConfig` enabled.
+
+### "npm run dev fails"
+*   **Reason:** Missing dependencies.
+*   **Solution:** Run `npm install` inside the `frontend` folder before running `npm run dev`.
+
+## 7. Future Changes and Extensions
 To further enhance this system, we plan to implement:
 - **Database Integration:** migrating from file-based storage to a robust database like PostgreSQL or MongoDB for scalable log retention.
 - **Authentication:** Adding JWT-based Login/Signup to secure access to the admin dashboard.
