@@ -9,9 +9,13 @@ public class Log implements Serializable {
 
     private String data;
 
+    public Log() {
+    }
+
     public Log(String data) {
         this.data = data;
-        // Todo: Figure out how to get thread information when user is adding/appending any log and add stackTrace
+        // Todo: Figure out how to get thread information when user is adding/appending
+        // any log and add stackTrace
     }
 
     public String getData() {
@@ -71,8 +75,5 @@ public class Log implements Serializable {
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
-
-
-
 
 }

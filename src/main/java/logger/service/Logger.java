@@ -18,33 +18,42 @@ public class Logger {
 
     private static Logger logger = null;
 
-    public static Logger getInstance(){
-        if(logger == null){
+    private Logger() {
+        logTrackSet = new java.util.concurrent.CopyOnWriteArraySet<>();
+        fileStore = new FileStore();
+    }
+
+    public static Logger getInstance() {
+        if (logger == null) {
             logger = new Logger();
         }
         return logger;
     }
 
-    public void addLog(Log log){
+    public void addLog(Log log) {
+        logTrackSet.add(log);
+        fileStore.addLog(log);
         // Todo: add timestamp and thread and stacktrace
     }
 
-    public void appendLog(){
+    public Set<Log> getLogs() {
+        return logTrackSet;
+    }
+
+    public void appendLog() {
         // Todo: Handle exception of append Log from datastore
     }
 
-    private void flushLogProcessingQueue(){
+    private void flushLogProcessingQueue() {
 
     }
 
-    private void put(){
+    private void put() {
 
     }
 
-    private void deleteLogs(){
+    private void deleteLogs() {
 
     }
-
-
 
 }

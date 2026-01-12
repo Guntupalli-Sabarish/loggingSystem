@@ -1,16 +1,18 @@
 package logger;
 
-
 import logger.pojo.Log;
 import logger.service.Logger;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Hello world!
  */
+@SpringBootApplication
 public class App {
     public static void main(String[] args) {
-        System.out.println(Logger.getInstance());
-        System.out.println(Logger.getInstance());
-
+        SpringApplication.run(App.class, args);
+        System.out.println("Logging System Service Started...");
+        System.out.println("Logger Instance: " + Logger.getInstance());
     }
 }
