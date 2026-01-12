@@ -7,4 +7,4 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/logging-system-1.0-SNAPSHOT.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
