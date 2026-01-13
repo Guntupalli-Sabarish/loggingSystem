@@ -50,10 +50,19 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Level 2: Filter Logic
+  // Level 2: Filter Logic (Enhanced with Regex)
   const filteredLogs = useMemo(() => {
     return logs.filter(log => {
-      const matchesSearch = log.data.toLowerCase().includes(searchTerm.toLowerCase());
+      let matchesSearch = false;
+      try {
+        // Try Regex Search first
+        const regex = new RegExp(searchTerm, 'i'); // 'i' for case-insensitive
+        matchesSearch = regex.test(log.data);
+      } catch (e) {
+        // Fallback to simple string search if Regex syntax is invalid (e.g. while typing)
+        matchesSearch = log.data.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+
       const matchesSeverity = filterSeverity === 'ALL' || (log.severity || 'LOW') === filterSeverity;
       return matchesSearch && matchesSeverity;
     });
