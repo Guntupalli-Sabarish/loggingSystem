@@ -1,118 +1,68 @@
-# 🚀 Distributed Logging System Project
+# Distributed Logging System
 
-## 1. SITUATION: Why was this project needed?
-In modern software environments, tracking application behavior in real-time is critical. We needed a centralized, non-blocking system to capture, store, and visualize logs from various parts of an application. The goal was to create a robust monitoring tool that could handle high concurrency without slowing down the core application logic.
+## Overview
+A high-performance, asynchronous logging system designed to capture, process, and visualize application logs in real-time. It features a thread-safe Java backend that decouples log ingestion from disk I/O, ensuring zero impact on main application performance, coupled with a responsive React dashboard for monitoring.
 
-### Real-World Scenarios & Examples:
-*   **Scenario A: E-Commerce Surge (Black Friday)**
-    *   *Problem:* Thousands of users checkout simultaneously. If the payment service crashes, traditional logging might be too slow or get lost in the crash.
-    *   *Need:* An asynchronous logger that captures "Payment Failed" events instantly without blocking the user's transaction thread.
-*   **Scenario B: Microservices Debugging**
-    *   *Problem:* A user reports an error, but the issue lies deep within Service C, called by Service B, called by Service A.
-    *   *Need:* A centralized dashboard to view logs from all services in one place to trace the request lifecycle.
-*   **Scenario C: Security Auditing**
-    *   *Problem:* A brute-force attack generates 10,000 login attempts per second.
-    *   *Need:* A high-performance logger that can handle this write-heavy load and alert admins (via the "High Severity" filter) immediately.
+## Key Features
+*   **Asynchronous Processing**: Logs are processed in the background, preventing main thread blocking.
+*   **Real-Time Dashboard**: Live monitoring of system events with auto-refresh.
+*   **Advanced Filtering**: Filter logs by "Search Term" (supporting Regex) and "Severity Level" (INFO, WARN, ERROR).
+*   **Persistent Storage**: Automatic archiving of logs to a local file system (`system.log`).
+*   **Simulated Traffic**: Built-in tools to simulate high-concurrency log events for testing.
 
-## 2. TASK: Algorithms, Patterns, and Code Used
-To solve this, we employed several key software engineering principles and design patterns:
-- **Design Patterns:**
-  - **Singleton Pattern:** Used for the `Logger` service to ensure a single, globally accessible instance coordinates all logging activities.
-  - **Producer-Consumer Pattern:** Implemented using a Queue to handle log ingestion asynchronously (decoupling log creation from writing, though simplified for this demo version).
-- **Data Structures:** 
-  - `CopyOnWriteArraySet`: Used for thread-safe storage of logs in memory to handle concurrent read/write operations.
-- **Algorithms:**
-  - **Filtering Algorithms:** Custom linear search logic in the frontend to filter logs by *Search Term* and *Severity Level* (O(n) complexity).
+## How It Works (Architecture)
 
-## 3. IN ACTION: Development, Challenges & Solutions
-**My Involvement:**
-I designed and built the full-stack architecture, connecting a Java Spring Boot backend with a reactive React.js frontend.
+### 1. The Core Engine (`Logger.java`)
+The backend is built on the **Producer-Consumer Design Pattern** to maximize throughput:
+*   **The Producer (Fast)**: When an application event occurs (`addLog`), the log data is instantly pushed into a thread-safe `LinkedBlockingQueue`. This operation is non-blocking, allowing the application to continue execution immediately.
+*   **The Consumer (Reliable)**: A dedicated background daemon thread continuously monitors the queue. It retrieves logs one by one and writes them to the persistent storage (`FileStore`).
+*   **Memory Management**: A separate `CopyOnWriteArraySet` maintains a recent history of logs in memory, facilitating fast read access for the frontend dashboard without hitting the disk.
 
-**Technologies Used:**
-- **Backend:** Java 17, Spring Boot 3.2, Maven, REST APIs.
-- **Frontend:** React.js, Vite, Vanilla CSS (Glassmorphism UI).
-- **Deployment/Tools:** Docker, Git, VS Code.
+### 2. The Singleton Service
+The system enforces a **Singleton Pattern** for the Logger service. This ensures that a single, globally separate instance manages all thread synchronization, preventing race conditions or file locking issues when multiple parts of the application try to log simultaneously.
 
-**Difficulties Faced & Overcoming Them:**
-1.  **CORS Errors (Cross-Origin Resource Sharing):** 
-    - *Problem:* The React frontend (port 5173) was blocked from calling the Java backend (port 8080).
-    - *Solution:* Implemented a Global CORS Configuration bean in Spring Boot to map `/**` and allow all origins and methods (GET, POST, DELETE).
-2.  **Deployment Port Mismatches:**
-    - *Problem:* Cloud platforms like Render assign dynamic ports, but the app was hardcoded to 8080.
-    - *Solution:* Updated `application.properties` to bind to `${PORT:8080}` and configured the `Dockerfile` to respect environment variables.
-3.  **Data Persistence:**
-    - *Problem:* Logs were lost on server restart.
-    - *Solution:* Implemented a `FileStore` class to append logs to a local `system.log` file, ensuring historical data is saved.
+### 3. Frontend-Backend Communication
+*   The React frontend polls the Spring Boot API every 2 seconds to fetch the latest state.
+*   Data is filtered client-side for immediate feedback during search operations.
 
-## 4. RESULT: Final Outcome & Deployment
-**The Result:**
-We successfully built a **"System Monitor"** dashboard that allows users to:
-- **Simulate Logs** with custom severity (High, Warn, Low).
-- **Visualise Data** in a clean, modern dark-mode UI.
-- **Filter & Search** logs instantly.
-- **Clear Logs** on demand to declutter the workspace.
+## Technology Stack
+*   **Backend**: Java 17, Spring Boot 3.x
+*   **Frontend**: React.js, Vite
+*   **Storage**: Local File System
+*   **Build Tools**: Maven, npm
 
-**Accuracy:**
-The system provides **real-time** updates (polling every 2 seconds) with **100% data consistency** between the backend memory and the frontend display during local stress tests.
-
-**Deployment:**
-- **Current Status:** Optimized for **Local Development**.
-- **Backend:** Runs on `localhost:8080` (Spring Boot).
-- **Frontend:** Runs on `localhost:5173` (Vite).
-- **Cloud Readiness:** The project contains a `deployment-setup` branch with full Docker and Vercel/Render configurations ready for live deployment.
-
-## 5. How to Run Locally
+## How to Run Locally
 
 ### Prerequisites
-- **Java 17+** installed.
-- **Node.js** (v18+) & **npm** installed.
-- **Git** installed.
+*   Java 17 or higher
+*   Node.js (v18+)
 
-### Step-by-Step Guide
-1.  **Clone the Repository**
-    ```bash
-    git clone https://github.com/Guntupalli-Sabarish/loggingSystem.git
-    cd loggingSystem
-    ```
-
-2.  **Start the Backend (Server)**
-    Open a terminal in the root folder and run:
+### Step 1: Start the Backend
+1.  Open a terminal in the root directory.
+2.  Run the Spring Boot application:
     ```bash
     mvn spring-boot:run
     ```
-    *Wait until you see: `Started App in X.XXX seconds` on port 8080.*
+    The server will start on `http://localhost:8080`.
 
-3.  **Start the Frontend (Client)**
-    Open a **new** terminal, navigate to the frontend folder, and start the app:
+### Step 2: Start the Frontend
+1.  Open a *new* terminal window.
+2.  Navigate to the frontend directory:
     ```bash
     cd frontend
+    ```
+3.  Install dependencies (first time only):
+    ```bash
+    npm install
+    ```
+4.  Run the development server:
+    ```bash
     npm run dev
     ```
-    *Open the URL shown (e.g., `http://localhost:5173`) in your browser.*
+    The application will open at `http://localhost:5173`.
 
-## 6. Troubleshooting Common Issues
-
-### "Port 8080 is already in use"
-*   **Reason:** You might have an old instance of the server running.
-*   **Solution:**
-    - **Windows:** Run `netstat -ano | findstr :8080`, find the PID, and run `taskkill /F /PID <PID>`.
-    - **Mac/Linux:** Run `lsof -i :8080` and `kill -9 <PID>`.
-
-### "Frontend says 'Network Error' or Logs don't load"
-*   **Reason:** The backend server is not running or CORS is blocked.
-*   **Solution:**
-    1.  Ensure the backend terminal shows "Started App".
-    2.  Check for errors in the browser console (F12).
-    3.  Verify `App.java` has the `@CrossOrigin` or `CorsConfig` enabled.
-
-### "npm run dev fails"
-*   **Reason:** Missing dependencies.
-*   **Solution:** Run `npm install` inside the `frontend` folder before running `npm run dev`.
-
-## 7. Future Changes and Extensions
-To further enhance this system, we plan to implement:
-- **Database Integration:** migrating from file-based storage to a robust database like PostgreSQL or MongoDB for scalable log retention.
-- **Authentication:** Adding JWT-based Login/Signup to secure access to the admin dashboard.
-- **WebSockets:** Replacing the current polling mechanism with WebSockets (Spring Boot + SockJS) for true, instant real-time log streaming.
-- **Microservices:** Decoupling the Producer (Log Ingestion) and Consumer (Log Processing) into separate services using Kafka for enterprise-level scale.
-
+## API Endpoints
+*   `GET /api/logs`: Retrieve all current logs from memory.
+*   `POST /api/logs`: Submit a new log entry.
+    *   Body: `{ "data": "Error message", "severity": "HIGH", "threadName": "main" }`
+*   `DELETE /api/logs`: Clear the in-memory log buffer.
