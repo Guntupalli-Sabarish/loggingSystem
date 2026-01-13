@@ -9,6 +9,7 @@ A high-performance, asynchronous logging system designed to capture, process, an
 *   **Advanced Filtering**: Filter logs by "Search Term" (supporting Regex) and "Severity Level" (INFO, WARN, ERROR).
 *   **Persistent Storage**: Automatic archiving of logs to a local file system (`system.log`).
 *   **Simulated Traffic**: Built-in tools to simulate high-concurrency log events for testing.
+*   **Container Ready**: Includes a `Dockerfile` for easy containerization and seamless deployment to cloud platforms like **Render**.
 
 ## How It Works (Architecture)
 
