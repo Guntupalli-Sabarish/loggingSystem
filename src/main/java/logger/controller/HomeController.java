@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Logging System Service is Running! 🚀 <br> Go to <a href='/api/logs'>/api/logs</a> to see the logs.";
+        return "Logging System Service is Running! 🚀 (v2) <br> Go to <a href='/api/logs'>/api/logs</a> to see the logs.";
     }
 }

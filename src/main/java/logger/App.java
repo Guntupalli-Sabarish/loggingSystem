@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Hello world!
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "logger")
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);

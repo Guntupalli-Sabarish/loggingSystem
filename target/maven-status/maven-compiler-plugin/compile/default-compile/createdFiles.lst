@@ -1,3 +1,4 @@
+logger\controller\HomeController.class
 logger\data\FileStore.class
 logger\data\Datastore.class
 logger\pojo\Log.class
